@@ -2,7 +2,10 @@ import { initializeApp } from 'firebase/app';
 import {
     getFirestore,
     collection,
-    getDocs
+    getDocs,
+    addDoc,
+    deleteDoc,
+    doc
 } from 'firebase/firestore'
 
 
@@ -25,7 +28,6 @@ const db = getFirestore()
 const collectionRef = collection(db, 'books')
 
 // get collection data - getDocs() returns a promise
-
 getDocs(collectionRef)
     .then((snapshot) => {
         let books = []
@@ -36,3 +38,28 @@ getDocs(collectionRef)
     }).catch(error => {
         console.log(error)
     })
+
+
+// adding documents 
+const addBookForm = document.querySelector('.add')
+addBookForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    addDoc(collectionRef, {
+        // grab the html "name" input value
+        title: addBookForm.title.value,
+        author: addBookForm.author.value,
+    }).then(() => addBookForm.reset()
+    ).catch(error => console.log(error))
+})
+
+
+// deleting documents
+const deleteBookForm = document.querySelector('.delete')
+deleteBookForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+    // database, collection, id value the user has entered
+    const docRef = doc(db, 'books', deleteBookForm.id.value)
+
+    deleteDoc(docRef).then(() => deleteBookForm.reset())
+})
