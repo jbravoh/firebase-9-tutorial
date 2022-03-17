@@ -8,7 +8,9 @@ import {
     deleteDoc,
     doc,
     query,
-    where
+    where,
+    orderBy,
+    serverTimestamp
 } from 'firebase/firestore'
 
 
@@ -31,7 +33,7 @@ const db = getFirestore()
 const collectionRef = collection(db, 'books')
 
 // queries
-const q = query(collectionRef, where("author", "==", "mark manson"))
+const q = query(collectionRef, orderBy('createdAt'))
 
 // real-time collecion data 
 onSnapshot(q, (snapshot) => {
@@ -53,6 +55,7 @@ addBookForm.addEventListener('submit', (e) => {
         // grab the html "name" input value
         title: addBookForm.title.value,
         author: addBookForm.author.value,
+        createdAt: serverTimestamp()
     }).then(() => addBookForm.reset()
     ).catch(error => console.log(error))
 })
