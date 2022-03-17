@@ -20,7 +20,7 @@ import {
     createUserWithEmailAndPassword,
     signOut,
     signInWithEmailAndPassword,
-    onAuthStateChanged
+    onAuthStateChanged,
 } from 'firebase/auth'
 
 
@@ -47,12 +47,12 @@ const collectionRef = collection(db, 'books')
 const q = query(collectionRef, orderBy('createdAt'))
 
 // ===> real-time collecion data 
-onSnapshot(q, (snapshot) => {
+const unsubCol = onSnapshot(q, (snapshot) => {
     let books = []
     snapshot.docs.forEach(doc => {
         books.push({ ...doc.data(), id: doc.id })
     })
-    // console.log(books)
+    console.log(books)
 })
 
 
@@ -87,8 +87,8 @@ deleteBookForm.addEventListener('submit', (e) => {
 const docRef = doc(db, 'books', "4KKUbMt0uz5WhqJ4lbW9")
 
 // get real time changes to the document 
-onSnapshot(docRef, (doc) => {
-    // console.log(doc.data(), doc.id)
+const unsubDoc = onSnapshot(docRef, (doc) => {
+    console.log(doc.data(), doc.id)
 })
 
 
@@ -118,7 +118,7 @@ signupForm.addEventListener('submit', (e) => {
 
     createUserWithEmailAndPassword(auth, email, password)
         .then((credential) => {
-            // console.log("user created:", credential.user)
+            console.log("user created:", credential.user)
             signupForm.reset()
         })
         .catch(error => console.log(error.message))
@@ -157,11 +157,27 @@ loginForm.addEventListener('submit', (e) => {
 
 // ===> subscribing to auth changes
 
-onAuthStateChanged(auth, (user) => {
+const unsubAuth = onAuthStateChanged(auth, (user) => {
     console.log('user status changed:', user)
 })
 
 
+// ===> subscribing to auth changes
 
+const unsubButton = document.querySelector('.unsubscribe')
+unsubButton.addEventListener('click', () => {
+    console.log('unsubscribing')
+    unsubCol()
+    unsubDoc()
+    unsubAuth()
+})
+
+
+
+
+
+
+
+// ===> account details
 // email: test@test.com, password: test12345
 // email: test2@test.com, password: test123
