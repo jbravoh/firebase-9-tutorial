@@ -2,7 +2,8 @@ import { initializeApp } from 'firebase/app';
 import {
     getFirestore,
     collection,
-    getDocs,
+    onSnapshot,
+    // getDocs,
     addDoc,
     deleteDoc,
     doc
@@ -28,20 +29,30 @@ const db = getFirestore()
 const collectionRef = collection(db, 'books')
 
 // get collection data - getDocs() returns a promise
-getDocs(collectionRef)
-    .then((snapshot) => {
-        let books = []
-        snapshot.docs.forEach(doc => {
-            books.push({ ...doc.data(), id: doc.id })
-        })
-        console.log(books)
-    }).catch(error => {
-        console.log(error)
+// getDocs(collectionRef)
+//     .then((snapshot) => {
+//         let books = []
+//         snapshot.docs.forEach(doc => {
+//             books.push({ ...doc.data(), id: doc.id })
+//         })
+//         console.log(books)
+//     }).catch(error => {
+//         console.log(error)
+//     })
+
+// real-time collecion data 
+onSnapshot(collectionRef, (snapshot) => {
+    let books = []
+    snapshot.docs.forEach(doc => {
+        books.push({ ...doc.data(), id: doc.id })
     })
+    console.log(books)
+})
 
 
 // adding documents 
 const addBookForm = document.querySelector('.add')
+
 addBookForm.addEventListener('submit', (e) => {
     e.preventDefault()
 
@@ -56,6 +67,7 @@ addBookForm.addEventListener('submit', (e) => {
 
 // deleting documents
 const deleteBookForm = document.querySelector('.delete')
+
 deleteBookForm.addEventListener('submit', (e) => {
     e.preventDefault()
     // database, collection, id value the user has entered
