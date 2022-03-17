@@ -6,7 +6,9 @@ import {
     // getDocs,
     addDoc,
     deleteDoc,
-    doc
+    doc,
+    query,
+    where
 } from 'firebase/firestore'
 
 
@@ -28,20 +30,11 @@ const db = getFirestore()
 // collection ref
 const collectionRef = collection(db, 'books')
 
-// get collection data - getDocs() returns a promise
-// getDocs(collectionRef)
-//     .then((snapshot) => {
-//         let books = []
-//         snapshot.docs.forEach(doc => {
-//             books.push({ ...doc.data(), id: doc.id })
-//         })
-//         console.log(books)
-//     }).catch(error => {
-//         console.log(error)
-//     })
+// queries
+const q = query(collectionRef, where("author", "==", "mark manson"))
 
 // real-time collecion data 
-onSnapshot(collectionRef, (snapshot) => {
+onSnapshot(q, (snapshot) => {
     let books = []
     snapshot.docs.forEach(doc => {
         books.push({ ...doc.data(), id: doc.id })
