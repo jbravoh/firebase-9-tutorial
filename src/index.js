@@ -8,9 +8,10 @@ import {
     deleteDoc,
     doc,
     query,
-    where,
+    // where,
     orderBy,
-    serverTimestamp
+    serverTimestamp,
+    getDoc
 } from 'firebase/firestore'
 
 
@@ -23,19 +24,19 @@ const firebaseConfig = {
     appId: "1:134763722083:web:1ed6d4112585149b398f56"
 };
 
-// initialize firebase app
+// ===> initialize firebase app
 initializeApp(firebaseConfig)
 
-// initialize services
+// ===> initialize services
 const db = getFirestore()
 
-// collection ref
+// ===> collection ref
 const collectionRef = collection(db, 'books')
 
-// queries
+// ===> queries
 const q = query(collectionRef, orderBy('createdAt'))
 
-// real-time collecion data 
+// ===> real-time collecion data 
 onSnapshot(q, (snapshot) => {
     let books = []
     snapshot.docs.forEach(doc => {
@@ -45,7 +46,7 @@ onSnapshot(q, (snapshot) => {
 })
 
 
-// adding documents 
+// ===> adding documents 
 const addBookForm = document.querySelector('.add')
 
 addBookForm.addEventListener('submit', (e) => {
@@ -61,7 +62,7 @@ addBookForm.addEventListener('submit', (e) => {
 })
 
 
-// deleting documents
+// ===> deleting documents
 const deleteBookForm = document.querySelector('.delete')
 
 deleteBookForm.addEventListener('submit', (e) => {
@@ -70,4 +71,12 @@ deleteBookForm.addEventListener('submit', (e) => {
     const docRef = doc(db, 'books', deleteBookForm.id.value)
 
     deleteDoc(docRef).then(() => deleteBookForm.reset())
+})
+
+// ===> get a single document 
+const docRef = doc(db, 'books', "4KKUbMt0uz5WhqJ4lbW9")
+
+// get real time changes to the document 
+onSnapshot(docRef, (doc) => {
+    console.log(doc.data(), doc.id)
 })
