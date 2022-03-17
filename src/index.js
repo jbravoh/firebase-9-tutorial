@@ -12,12 +12,15 @@ import {
     orderBy,
     serverTimestamp,
     // getDoc,
-    updateDoc
+    updateDoc,
+    signout
 } from 'firebase/firestore'
 
 import {
     getAuth,
-    createUserWithEmailAndPassword
+    createUserWithEmailAndPassword,
+    signOut,
+    signInWithEmailAndPassword
 } from 'firebase/auth'
 
 
@@ -119,6 +122,37 @@ signupForm.addEventListener('submit', (e) => {
             signupForm.reset()
         })
         .catch(error => console.log(error.message))
+})
 
+// ===> logging in and out 
+
+const logoutButton = document.querySelector('.logout')
+
+logoutButton.addEventListener('click', () => {
+    signOut(auth)
+        .then(() => console.log('the user signed out'))
+        .catch((error => console.log(error.message)))
 
 })
+
+const loginForm = document.querySelector('.login')
+
+loginForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    const email = loginForm.email.value
+    const password = loginForm.password.value
+
+    signInWithEmailAndPassword(auth, email, password)
+        .then((credential => {
+            console.log('user logged in:', credential.user)
+            loginForm.reset()
+
+        }))
+        .catch(error => console.log(error.message))
+
+})
+
+
+
+// email: test@test.com password: test12345
