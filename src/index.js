@@ -13,14 +13,14 @@ import {
     serverTimestamp,
     // getDoc,
     updateDoc,
-    signout
 } from 'firebase/firestore'
 
 import {
     getAuth,
     createUserWithEmailAndPassword,
     signOut,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    onAuthStateChanged
 } from 'firebase/auth'
 
 
@@ -52,7 +52,7 @@ onSnapshot(q, (snapshot) => {
     snapshot.docs.forEach(doc => {
         books.push({ ...doc.data(), id: doc.id })
     })
-    console.log(books)
+    // console.log(books)
 })
 
 
@@ -88,7 +88,7 @@ const docRef = doc(db, 'books', "4KKUbMt0uz5WhqJ4lbW9")
 
 // get real time changes to the document 
 onSnapshot(docRef, (doc) => {
-    console.log(doc.data(), doc.id)
+    // console.log(doc.data(), doc.id)
 })
 
 
@@ -118,7 +118,7 @@ signupForm.addEventListener('submit', (e) => {
 
     createUserWithEmailAndPassword(auth, email, password)
         .then((credential) => {
-            console.log("user created:", credential.user)
+            // console.log("user created:", credential.user)
             signupForm.reset()
         })
         .catch(error => console.log(error.message))
@@ -130,7 +130,9 @@ const logoutButton = document.querySelector('.logout')
 
 logoutButton.addEventListener('click', () => {
     signOut(auth)
-        .then(() => console.log('the user signed out'))
+        .then(() => {
+            console.log('the user signed out')
+        })
         .catch((error => console.log(error.message)))
 
 })
@@ -153,6 +155,13 @@ loginForm.addEventListener('submit', (e) => {
 
 })
 
+// ===> subscribing to auth changes
+
+onAuthStateChanged(auth, (user) => {
+    console.log('user status changed:', user)
+})
 
 
-// email: test@test.com password: test12345
+
+// email: test@test.com, password: test12345
+// email: test2@test.com, password: test123
