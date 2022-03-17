@@ -15,6 +15,10 @@ import {
     updateDoc
 } from 'firebase/firestore'
 
+import {
+    getAuth
+} from 'firebase/auth'
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyC2fuxLwmEibu0SAK5olnnCNqrAP-4_VdA",
@@ -30,6 +34,7 @@ initializeApp(firebaseConfig)
 
 // ===> initialize services
 const db = getFirestore()
+const auth = getAuth()
 
 // ===> collection ref
 const collectionRef = collection(db, 'books')
@@ -54,7 +59,7 @@ addBookForm.addEventListener('submit', (e) => {
     e.preventDefault()
 
     addDoc(collectionRef, {
-        // grab the html "name" input value
+        // grab the html "name" input value 
         title: addBookForm.title.value,
         author: addBookForm.author.value,
         createdAt: serverTimestamp()
